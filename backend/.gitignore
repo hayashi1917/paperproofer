@@ -1,0 +1,43 @@
+# --- Python General ---
+__pycache__/
+*.py[cod]
+*$py.class
+
+# --- Distribution / Builds ---
+dist/
+build/
+*.egg-info/
+
+# --- Virtual Environments ---
+# Poetryなどの仮想環境ディレクトリ
+.venv/
+venv/
+env/
+ENV/
+
+# --- Environment Variables (Secrets) ---
+# APIキーなどが含まれるため絶対にコミットしない
+.env
+.env.local
+
+# --- IDE / Editor Settings ---
+# VS Code
+.vscode/
+# IntelliJ / PyCharm
+.idea/
+# macOS
+.DS_Store
+
+# --- Testing ---
+.pytest_cache/
+.coverage
+htmlcov/
+
+# --- Project Specific (Temporary Files) ---
+# ローカルテスト用のPDFファイルなど
+test.pdf
+*.pdf
+*.log
+
+# --- Database (if any) ---
+*.sqlite3
