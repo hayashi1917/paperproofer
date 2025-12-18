@@ -46,11 +46,11 @@ class GeminiService:
             message,
         ]
 
-        # デバッグ: structured outputなしで生のレスポンスを確認
-        print("=== デバッグ: 生のレスポンス ===")
-        raw_response = await self.llm_client.ainvoke(messages)
-        print(f"raw_response: {raw_response.content}")
-        print("=== デバッグ終了 ===")
+        # # デバッグ: structured outputなしで生のレスポンスを確認
+        # print("=== デバッグ: 生のレスポンス ===")
+        # raw_response = await self.llm_client.ainvoke(messages)
+        # print(f"raw_response: {raw_response.content}")
+        # print("=== デバッグ終了 ===")
 
         llm_with_structure = self.llm_client.with_structured_output(IssueList)
         print(f"Gemini呼び出し中...")

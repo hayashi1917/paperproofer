@@ -288,6 +288,78 @@ body {
   font-size: 0.875rem;
 }
 
+.btn-edit {
+  background: #17a2b8;
+  color: white;
+}
+
+.btn-edit:hover:not(:disabled) {
+  background: #138496;
+}
+
+.issue-error-msg {
+  margin-top: 0.5rem;
+  padding: 0.5rem;
+  background-color: #f8d7da;
+  color: #721c24;
+  border: 1px solid #f5c6cb;
+  border-radius: 4px;
+  font-size: 0.875rem;
+}
+
+.issue-editor {
+  background: #fff;
+  padding: 0.5rem;
+  border-radius: 4px;
+  border: 1px solid #ced4da;
+}
+
+.edit-textarea {
+  width: 100%;
+  min-height: 80px;
+  padding: 0.5rem;
+  font-family: 'Courier New', Courier, monospace;
+  font-size: 0.875rem;
+  border: 1px solid #ced4da;
+  border-radius: 4px;
+  resize: vertical;
+}
+
+.editor-actions {
+  margin-top: 1rem;
+  border-top: none;
+  padding: 0;
+  background: transparent;
+  justify-content: flex-end;
+}
+
+/* Reproof Prompt */
+.reproof-prompt {
+  width: 100%;
+  background: #e9ecef;
+  padding: 1.5rem;
+  border-radius: 8px;
+  margin-bottom: 1rem;
+  border: 2px dashed #adb5bd;
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+  align-items: center;
+  text-align: center;
+}
+
+.reproof-prompt p {
+  font-weight: 600;
+  color: #495057;
+}
+
+.reproof-prompt .upload-item {
+  min-width: unset;
+  width: 100%;
+  max-width: 400px;
+}
+
+
 /* TeX Preview */
 .tex-preview {
   width: 100%;
@@ -339,4 +411,119 @@ body {
     flex-direction: column;
     gap: 0.5rem;
   }
+}
+
+/* Modal Styles */
+.modal-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background-color: rgba(0, 0, 0, 0.5);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 1000;
+}
+
+.modal-content {
+  background: white;
+  width: 90vw;
+  height: 90vh;
+  border-radius: 8px;
+  display: flex;
+  flex-direction: column;
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.2);
+  overflow: hidden;
+}
+
+.modal-header {
+  padding: 1rem;
+  border-bottom: 1px solid #ddd;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  background: #f8f9fa;
+}
+
+.modal-header h3 {
+  margin: 0;
+  color: #333;
+}
+
+.btn-close {
+  background: none;
+  border: none;
+  font-size: 1.5rem;
+  cursor: pointer;
+  color: #666;
+}
+
+.modal-body {
+  flex: 1;
+  display: flex;
+  overflow: hidden;
+}
+
+.modal-info {
+  width: 300px;
+  background: #f8f9fa;
+  border-right: 1px solid #ddd;
+  padding: 1rem;
+  overflow-y: auto;
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+}
+
+.info-block strong {
+  display: block;
+  margin-bottom: 0.5rem;
+  color: #555;
+  font-size: 0.875rem;
+}
+
+.info-block pre {
+  background: #fff;
+  padding: 0.5rem;
+  border: 1px solid #ddd;
+  border-radius: 4px;
+  white-space: pre-wrap;
+  word-break: break-all;
+  font-size: 0.85rem;
+  color: #333;
+}
+
+.modal-editor {
+  flex: 1;
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+}
+
+.codemirror-wrapper {
+  flex: 1;
+  font-size: 14px;
+  overflow: auto;
+  text-align: left;
+}
+
+.modal-footer {
+  padding: 1rem;
+  border-top: 1px solid #ddd;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  background: #f8f9fa;
+}
+
+.hint {
+  font-size: 0.875rem;
+  color: #666;
+}
+
+.modal-actions {
+  display: flex;
+  gap: 1rem;
 }
