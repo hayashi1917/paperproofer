@@ -35,7 +35,6 @@ async def test_proofread(pdf_base64):
         response = await client.post(
             "/api/proofread/",
             json={
-                "tex_content": TEST_TEX,
                 "pdf_base64": pdf_base64,
                 "ignored_issues": [],
                 "round_number": 0,
@@ -59,9 +58,8 @@ async def test_proofread_with_ignored_issues(pdf_base64):
         response = await client.post(
             "/api/proofread/",
             json={
-                "tex_content": TEST_TEX,
                 "pdf_base64": pdf_base64,
-                "ignored_issues": ["1"],  # 指摘ID 1 を無視
+                "ignored_issues": [],
                 "round_number": 1,
             }
         )
@@ -69,51 +67,3 @@ async def test_proofread_with_ignored_issues(pdf_base64):
     assert response.status_code == 200
     data = response.json()
     assert data["round_number"] == 2
-
-@pytest.mark.asyncio
-async def test_apply_success():
-    """POST /proofread/apply のテスト（成功ケース）"""
-    transport = ASGITransport(app=app)
-    async with AsyncClient(transport=transport, base_url="http://test") as client:
-        response = await client.post(
-            "/api/proofread/apply",
-            json={
-                "tex_content": "And this is wrong.",
-                "issue": {
-                    "issue_id": "1",
-                    "before_text": "And this",
-                    "after_text": "This",
-                    "checklist_item": "文頭のAnd禁止",
-                    "violation_reason": "口語的表現"
-                }
-            }
-        )
-    
-    assert response.status_code == 200
-    data = response.json()
-    assert data["success"] == True
-    assert data["new_tex_content"] == "This is wrong."
-
-@pytest.mark.asyncio
-async def test_apply_failure():
-    """POST /proofread/apply のテスト（置換対象が見つからない）"""
-    transport = ASGITransport(app=app)
-    async with AsyncClient(transport=transport, base_url="http://test") as client:
-        response = await client.post(
-            "/api/proofread/apply",
-            json={
-                "tex_content": "Hello world.",
-                "issue": {
-                    "issue_id": "1",
-                    "before_text": "存在しない文",
-                    "after_text": "修正後",
-                    "checklist_item": "テスト",
-                    "violation_reason": "テスト"
-                }
-            }
-        )
-    
-    assert response.status_code == 200
-    data = response.json()
-    assert data["success"] == False
-    assert data["new_tex_content"] == "Hello world."

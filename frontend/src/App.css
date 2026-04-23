@@ -100,6 +100,12 @@ body {
   color: #28a745;
 }
 
+.description {
+  margin-top: 1rem;
+  color: #555;
+  font-size: 0.95rem;
+}
+
 /* Controls */
 .controls {
   display: flex;
@@ -526,4 +532,19 @@ body {
 .modal-actions {
   display: flex;
   gap: 1rem;
+}
+
+.btn-show {
+  background: #6f42c1;
+  color: white;
+}
+
+.btn-show:hover:not(:disabled) {
+  background: #59359a;
+}
+
+.main-codemirror {
+  border: 1px solid #ddd;
+  border-radius: 4px;
+  font-size: 14px;
 }

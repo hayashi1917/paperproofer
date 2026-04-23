@@ -1,10 +1,6 @@
 from pydantic import BaseModel, Field
 
-class ProofreadRequest(BaseModel):
-    tex_content: str
-    pdf_base64: str
-    ignored_issues: list[str]
-    round_number: int
+
 
 # backend/app/schemas/issue.py
 class Issue(BaseModel):
@@ -17,14 +13,11 @@ class Issue(BaseModel):
 class IssueList(BaseModel):
     issues: list[Issue]
 
+class ProofreadRequest(BaseModel):
+    pdf_base64: str
+    ignored_issues: list[Issue]
+    round_number: int
+
 class ProofreadResponse(BaseModel):
     issues: list[Issue]
     round_number: int
-
-class ApplyRequest(BaseModel):
-    tex_content: str
-    issue: Issue
-
-class ApplyResponse(BaseModel):
-    success: bool
-    new_tex_content: str
