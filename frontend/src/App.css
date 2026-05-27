@@ -365,6 +365,11 @@ body {
   max-width: 400px;
 }
 
+.reproof-upload-area {
+  width: 100%;
+  justify-content: center;
+}
+
 
 /* TeX Preview */
 .tex-preview {

@@ -10,6 +10,7 @@ export interface Issue {
 
 export interface ProofreadRequest {
   pdf_base64: string;
+  tex_source: string;
   ignored_issues: Issue[];
   round_number: number;
 }

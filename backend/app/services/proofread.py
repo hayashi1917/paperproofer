@@ -16,10 +16,11 @@ class GeminiService:
             max_retries=2,
         )
     
-    async def get_issues(self, pdf_base64: str, ignored_issues: list[Issue]) -> IssueList:
+    async def get_issues(self, pdf_base64: str, tex_source: str, ignored_issues: list[Issue]) -> IssueList:
         # ユーザープロンプトを組み立て
         user_prompt = GET_ISSUES_USER_PROMPT.format(
             ignored_issues=self._format_ignored_issues(ignored_issues),
+            tex_source=tex_source,
             checklist=CHECKLIST,
         )
         print(self._format_ignored_issues(ignored_issues))
@@ -66,7 +67,7 @@ class GeminiService:
 GET_ISSUES_SYSTEM_PROMPT = """
 # 指示
 あなたは学術論文の形式を検証する自動Lintツールです。
-与えられた論文PDFについて、提供されたチェックリストに基づき、形式上の誤りを指摘してください。
+与えられた論文PDFとTeXソースについて、提供されたチェックリストに基づき、形式上の誤りを指摘してください。
 
 ## 指摘の基準
 チェクリストに**明白に違反している箇所のみ**を抽出してください。
@@ -80,17 +81,24 @@ GET_ISSUES_SYSTEM_PROMPT = """
 ## ルール
 1. **文字通りの適用**
     - チェックリストの記述を文字通りに解釈してください。拡大解釈は禁止です。
-2. **PDFのみを根拠に判断**
-    - 入力はPDFのみです。PDFから確認できない情報については推測しないでください。
+2. **PDFとTeXソースを根拠に判断**
+    - PDFは表示結果の確認に使い、TeXソースは記述・コマンド・参照・数式環境などの確認に使ってください。
+    - PDFまたはTeXソースから確認できない情報については推測しないでください。
+    - PDFとTeXソースに食い違いがある場合は、確認できる範囲でその食い違いを指摘してください。
 3. **修正候補の出力**
-    - `before_text` にはPDF中の問題箇所をそのまま抜粋してください。
-    - `after_text` には、問題箇所をどのように修正すべきかの候補文を記載してください。
+    - `before_text` にはPDFまたはTeXソース中の問題箇所をそのまま抜粋してください。
+    - `after_text` には、問題箇所をTeXソースでどのように修正すべきかの候補を記載してください。
 """
 
 GET_ISSUES_USER_PROMPT = """
 # 入力
 ## 無視する指摘事項
 {ignored_issues}
+
+## TeXソース
+<tex_source>
+{tex_source}
+</tex_source>
 
 ## チェックリスト
 {checklist}

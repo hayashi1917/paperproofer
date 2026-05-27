@@ -15,6 +15,7 @@ class IssueList(BaseModel):
 
 class ProofreadRequest(BaseModel):
     pdf_base64: str
+    tex_source: str
     ignored_issues: list[Issue]
     round_number: int
 

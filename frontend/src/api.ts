@@ -24,10 +24,19 @@ export function fileToBase64(file: File): Promise<string> {
     reader.readAsDataURL(file);
     reader.onload = () => {
       const result = reader.result as string;
-      // Remove data:application/pdf;base64, prefix
+      // Remove data:*/*;base64, prefix
       const base64 = result.split(',')[1];
       resolve(base64);
     };
+    reader.onerror = (error) => reject(error);
+  });
+}
+
+export function fileToText(file: File): Promise<string> {
+  return new Promise((resolve, reject) => {
+    const reader = new FileReader();
+    reader.readAsText(file, 'UTF-8');
+    reader.onload = () => resolve(reader.result as string);
     reader.onerror = (error) => reject(error);
   });
 }

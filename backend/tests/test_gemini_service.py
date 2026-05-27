@@ -1,46 +1,59 @@
-# backend/tests/test_gemini_service.py
-import asyncio
-import base64
-import os
-from dotenv import load_dotenv
+import sys
+from pathlib import Path
 
-# .envを読み込み
-load_dotenv()
+sys.path.insert(0, str(Path(__file__).parent.parent))
 
+from app.schemas.schemas import IssueList
 from app.services.proofread import GeminiService
-async def test_get_issues():
-    """get_issuesのテスト"""
-    print("=== get_issues テスト ===")
-    
-    service = GeminiService()
-    
-    # テスト用PDFがある場合は読み込む
-    # なければダミーのbase64を使う（エラーになる可能性あり）
-    pdf_path = "test.pdf"  # テスト用PDFのパス
-    
-    if os.path.exists(pdf_path):
-        with open(pdf_path, "rb") as f:
-            pdf_base64 = base64.b64encode(f.read()).decode("utf-8")
-    else:
-        print("警告: test.pdfが見つかりません。PDFなしでテストします。")
-        pdf_base64 = ""
-    
-    try:
-        result = await service.get_issues(
-            pdf_base64=pdf_base64,
-            ignored_issues=[]
-        )
-        
-        print(f"検出された指摘数: {len(result.issues)}")
-        for issue in result.issues:
-            print(f"\n--- 指摘 {issue.issue_id} ---")
-            print(f"修正前: {issue.before_text}")
-            print(f"修正後: {issue.after_text}")
-            print(f"チェック項目: {issue.checklist_item}")
-            print(f"理由: {issue.violation_reason}")
-    except Exception as e:
-        print(f"エラー: {e}")
 
-if __name__ == "__main__":
-    # 非同期テスト
-    asyncio.run(test_get_issues())
+
+TEST_TEX = r"""
+\documentclass{article}
+\begin{document}
+And this sentence starts with And.
+Fig. 1 shows the result.
+\end{document}
+"""
+
+
+class FakeStructuredLlm:
+    def __init__(self):
+        self.messages = None
+
+    async def ainvoke(self, messages):
+        self.messages = messages
+        return IssueList(issues=[])
+
+
+class FakeLlm:
+    def __init__(self, structured_llm):
+        self.structured_llm = structured_llm
+
+    def with_structured_output(self, schema):
+        assert schema is IssueList
+        return self.structured_llm
+
+
+async def test_get_issues_includes_pdf_and_tex_inputs():
+    """get_issues がPDFとTeXソースをGemini入力に含めることを確認する"""
+    structured_llm = FakeStructuredLlm()
+    service = GeminiService.__new__(GeminiService)
+    service.llm_client = FakeLlm(structured_llm)
+
+    result = await service.get_issues(
+        pdf_base64="dummy-pdf-base64",
+        tex_source=TEST_TEX,
+        ignored_issues=[],
+    )
+
+    assert result.issues == []
+    assert structured_llm.messages is not None
+
+    human_message = structured_llm.messages[1]
+    pdf_part = human_message.content[0]
+    text_part = human_message.content[1]
+
+    assert pdf_part["mime_type"] == "application/pdf"
+    assert pdf_part["data"] == "dummy-pdf-base64"
+    assert "<tex_source>" in text_part["text"]
+    assert TEST_TEX in text_part["text"]
